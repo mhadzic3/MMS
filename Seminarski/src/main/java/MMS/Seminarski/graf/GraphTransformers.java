@@ -42,7 +42,7 @@ public class GraphTransformers {
 		Transformer<Cvor, String> vertexLabel = new Transformer<Cvor, String>() {
             public String transform(Cvor cvor) {
                 return cvor.getNaziv() + 
-                	   (cvor.getOznacen()==1 ? " (" + cvor.getRedoslijed() + ")": "");
+                	   (cvor.getOznacen()==1 || cvor.getOznacen()==2 ? " (" + cvor.getRedoslijed() + ")": "");
             }
         }; 
         

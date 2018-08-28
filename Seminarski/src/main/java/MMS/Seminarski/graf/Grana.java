@@ -55,8 +55,14 @@ public class Grana {
 	}
 	
 	public Paint getPaint() {
-		if(this.getOznacena()==1) {
+		if(this.getOznacena() == 1) {
 			return Color.GREEN;
+		}
+		else if(this.getOznacena() == 2) {
+			return Color.BLUE;
+		}
+		else if(this.getOznacena() == 3) {
+			return Color.RED;
 		}
 		else {
 			return Color.BLACK;

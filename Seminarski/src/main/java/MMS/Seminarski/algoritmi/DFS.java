@@ -25,7 +25,7 @@ public class DFS extends Algoritam {
 		
 		DFS_rek(graf, izvor);
 		
-		if(Cvor.getBrojac()<graf.getVertexCount()) {
+		if(Cvor.getBrojac() <= graf.getVertexCount()) {
 			System.out.println("Nema puta do svih cvorova grafa.");
 		}
 	}

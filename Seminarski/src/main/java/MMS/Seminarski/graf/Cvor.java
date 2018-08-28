@@ -64,8 +64,11 @@ public class Cvor {
 	}
 	
 	public Paint getPaint() {
-		if(this.getOznacen()==1) {
+		if(this.getOznacen() == 1) {
 			return Color.GREEN;
+		}
+		else if(this.getOznacen() == 2) {
+			return Color.BLUE;
 		}
 		else {
 			return Color.RED;

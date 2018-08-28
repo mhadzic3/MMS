@@ -42,11 +42,19 @@ public class FordFulkerson extends Algoritam{
 		while(!lanac.isEmpty()) {
 			lanac.sort(Comparator.comparingDouble(Grana::getRezerva));
 			
-			double delta = lanac.get(0).getRezerva();
+			for(Grana g:lanac) {
+				g.setOznacena(1);
+			}
 			
+			this.addGraphAtributes(graf);
+			
+			lanac.get(0).setOznacena(3);
+			
+			this.addGraphAtributes(graf);
+			
+			double delta = lanac.get(0).getRezerva();
 			for(Grana g:lanac) {
 				g.setProtok(g.getProtok() + (g.isSmjer() ? delta : -delta));
-				g.setOznacena(1);
 			}
 			
 			this.addGraphAtributes(graf);
@@ -55,9 +63,11 @@ public class FordFulkerson extends Algoritam{
 			
 			lanac = BFS_lanac(graf, izvor, ponor);
 		}
+		
+		this.addGraphAtributes(graf);
 	}
 	
-	private static List<Grana> BFS_lanac(Graph<Cvor, Grana> graf, Cvor izvor, Cvor ponor) {
+	private List<Grana> BFS_lanac(Graph<Cvor, Grana> graf, Cvor izvor, Cvor ponor) {
 		List<Cvor> cvorovi = new ArrayList<Cvor>();
 		cvorovi.add(izvor);
 		
@@ -68,22 +78,28 @@ public class FordFulkerson extends Algoritam{
 		Cvor cvor = ponor;
 		
 		while(cvor.getCvor() != null) {
+			cvor.setOznacen(1);
 			lanac.add(cvor.getGrana());
 			cvor = cvor.getCvor();
+			if(cvor.getCvor() == null) {
+				cvor.setOznacen(1);
+			}
 		}
 		
 		return lanac;
 	}
 	
-	private static void BFS_rek(Graph<Cvor, Grana> graf, List<Cvor> cvorovi) {
+	private void BFS_rek(Graph<Cvor, Grana> graf, List<Cvor> cvorovi) {
 		if(cvorovi.isEmpty()) {
 			return;
 		}
 		
 		for(Cvor c:cvorovi) {
-			c.setOznacen(1);
+			c.setOznacen(2);
 			c.setRedoslijed(Cvor.getBrojac());
 		}
+		
+		this.addGraphAtributes(graf);
 		
 		Cvor.setBrojac(Cvor.getBrojac() + 1);
 		
@@ -97,6 +113,7 @@ public class FordFulkerson extends Algoritam{
 						 c2 == graf.getSource(g) && g.getProtok() > 0.0)) {
 					c2.setCvor(c);
 					c2.setGrana(g);
+					g.setOznacena(2);
 					cvorovi2.add(c2);
 					
 					g.setSmjer(c2 == graf.getDest(g) ? true : false);
@@ -107,7 +124,7 @@ public class FordFulkerson extends Algoritam{
 		BFS_rek(graf, cvorovi2);
 	}
 	
-	private static void resetGraphFF(Graph<Cvor, Grana> graf) {
+	private void resetGraphFF(Graph<Cvor, Grana> graf) {
 		Cvor.setBrojac(1);
 		
 		for(Cvor c:graf.getVertices()) {
