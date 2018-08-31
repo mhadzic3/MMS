@@ -204,8 +204,6 @@ public class PocetnaForma {
 		JButton btnFf = new JButton("Start Ford-Fulkerson");
 		btnFf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				lblStatus.setText("");
-				
 				algoritamList.clear();
 				algoritamList.add(new FordFulkerson(viewer.getGraphLayout().getGraph()));
 				
@@ -214,6 +212,8 @@ public class PocetnaForma {
 					algoritamList.clear();
 				}
 				else {
+					lblStatus.setText("Algorithm is done.");
+					
 					viewer.getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel2());
 					viewer.getRenderContext().setEdgeLabelTransformer(GraphTransformers.getEdgeLabel2());
 					
@@ -228,14 +228,14 @@ public class PocetnaForma {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!algoritamList.isEmpty() && algoritamList.get(0) != null) {
 					if(!algoritamList.get(0).previousStep()) {
-						lblStatus.setText("Algoritam is at the beginning.");
+						lblStatus.setText("Algorithm is at the beginning.");
 					}
 					else {
 						lblStatus.setText("");
 					}
 				}
 				else {
-					lblStatus.setText("Algoritam is null.");
+					lblStatus.setText("Algorithm is null.");
 				}
 				viewer.repaint();
 			}
@@ -247,14 +247,14 @@ public class PocetnaForma {
 			public void actionPerformed(ActionEvent e) {
 				if(!algoritamList.isEmpty() && algoritamList.get(0) != null) {
 					if(!algoritamList.get(0).nextStep()) {
-						lblStatus.setText("Algoritam is at the end.");
+						lblStatus.setText("Algorithm is at the end.");
 					}
 					else {
 						lblStatus.setText("");
 					}
 				}
 				else {
-					lblStatus.setText("Algoritam is null.");
+					lblStatus.setText("Algorithm is null.");
 				}
 				viewer.repaint();
 			}

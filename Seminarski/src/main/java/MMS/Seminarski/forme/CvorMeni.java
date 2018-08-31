@@ -51,6 +51,8 @@ public class CvorMeni extends JPopupMenu{
 					getAlgoritamList().clear();
 				}
 				else {
+					getLblStatus().setText("Algorithm is done.");
+					
 					getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel1());
 					getViewer().repaint();
 				}
@@ -68,6 +70,8 @@ public class CvorMeni extends JPopupMenu{
 					getAlgoritamList().clear();
 				}
 				else {
+					getLblStatus().setText("Algorithm is done.");
+					
 					getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel2());
 					getViewer().repaint();
 				}
