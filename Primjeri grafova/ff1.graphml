@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns/graphml"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  
+xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns/graphml">
+<key id="x" for="node">
+<default>0.0</default>
+</key>
+<key id="y" for="node">
+<default>0.0</default>
+</key>
+<key id="tezina" for="edge">
+<default>10.0</default>
+</key>
+<graph edgedefault="directed">
+<node id="C2">
+<data key="x">366.0</data>
+<data key="y">279.0</data>
+</node>
+<node id="C4">
+<data key="x">549.0</data>
+<data key="y">290.0</data>
+</node>
+<node id="C7">
+<data key="x">773.0</data>
+<data key="y">502.0</data>
+</node>
+<node id="C6">
+<data key="x">787.0</data>
+<data key="y">282.0</data>
+</node>
+<node id="C8">
+<data key="x">1021.0</data>
+<data key="y">275.0</data>
+</node>
+<node id="C1">
+<data key="x">164.0</data>
+<data key="y">281.0</data>
+</node>
+<node id="C3">
+<data key="x">548.0</data>
+<data key="y">91.0</data>
+</node>
+<node id="C5">
+<data key="x">551.0</data>
+<data key="y">497.0</data>
+</node>
+<edge source="C1" target="C2">
+<data key="tezina">8.0</data>
+</edge>
+<edge source="C3" target="C4">
+<data key="tezina">4.0</data>
+</edge>
+<edge source="C4" target="C5">
+<data key="tezina">1.0</data>
+</edge>
+<edge source="C5" target="C7">
+<data key="tezina">6.0</data>
+</edge>
+<edge source="C4" target="C6">
+<data key="tezina">2.0</data>
+</edge>
+<edge source="C6" target="C3">
+<data key="tezina">1.0</data>
+</edge>
+<edge source="C5" target="C6">
+<data key="tezina">2.0</data>
+</edge>
+<edge source="C6" target="C8">
+<data key="tezina">1.0</data>
+</edge>
+<edge source="C7" target="C8">
+<data key="tezina">9.0</data>
+</edge>
+<edge source="C4" target="C2">
+<data key="tezina">3.0</data>
+</edge>
+<edge source="C2" target="C3">
+<data key="tezina">3.0</data>
+</edge>
+<edge source="C2" target="C5">
+<data key="tezina">3.0</data>
+</edge>
+</graph>
+</graphml>
