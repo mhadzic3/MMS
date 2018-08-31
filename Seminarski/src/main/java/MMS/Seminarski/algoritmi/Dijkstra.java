@@ -17,6 +17,10 @@ public class Dijkstra extends Algoritam {
 	}
 	
 	private void Dijkstra_start(Graph<Cvor, Grana> graf, Cvor izvor) {
+		if(!this.testGraph(graf)) {
+			return;
+		}
+		
 		Algoritam.resetGraph(graf);
 		
 		this.addGraphAtributes(graf);
@@ -30,13 +34,12 @@ public class Dijkstra extends Algoritam {
 			cvorovi.sort(Comparator.comparingDouble(Cvor::getPotencijal));
 			
 			Cvor cvor = cvorovi.isEmpty() ? null : cvorovi.get(0);
-			if(cvor==null) {
-				System.out.println("Nema puta do svih cvorova grafa.");
+			if(cvor == null) {
 				return;
 			}
 			else {
 				cvor.setOznacen(1);
-				if(cvor.getGrana()!=null) {
+				if(cvor.getGrana() != null) {
 					cvor.getGrana().setOznacena(1);
 				}
 			}
@@ -44,7 +47,7 @@ public class Dijkstra extends Algoritam {
 			List<Grana> grane = new ArrayList<Grana>(graf.getOutEdges(cvor));
 			for(Grana g:grane) {
 				Cvor c = graf.getOpposite(cvor, g);
-				if(!c.isPosjecen() || c.getPotencijal()>cvor.getPotencijal() + g.getTezina()) {
+				if(!c.isPosjecen() || c.getPotencijal() > cvor.getPotencijal() + g.getTezina()) {
 					c.setPotencijal(cvor.getPotencijal() + g.getTezina());
 					c.setGrana(g);
 					c.setCvor(cvor);
@@ -56,5 +59,9 @@ public class Dijkstra extends Algoritam {
 			
 			this.addGraphAtributes(graf);
 		}
+	}
+	
+	private boolean testGraph(Graph<Cvor, Grana> graf) {
+		return !this.testNegativeEdges(graf);
 	}
 }

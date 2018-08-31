@@ -57,8 +57,8 @@ public abstract class Algoritam {
 	}
 	
 	public void setGraphAtributes() {
-		List<Cvor> cvorovi = this.getCvoroviKorak().get(this.getKorak());
-		List<Grana> grane = this.getGraneKorak().get(this.getKorak());
+		List<Cvor> cvorovi = this.getCvoroviKorak().size() == 0 ? new ArrayList<Cvor>() : this.getCvoroviKorak().get(this.getKorak());
+		List<Grana> grane = this.graneKorak.size() == 0 ? new ArrayList<Grana>() : this.getGraneKorak().get(this.getKorak());
 		
 		for(Cvor c:cvorovi) {
 			c.setGraphAtributes();
@@ -113,5 +113,15 @@ public abstract class Algoritam {
 			
 			g.setOznacena(0);
 		}
+	}
+	
+	public boolean testNegativeEdges(Graph<Cvor, Grana> graf) {
+		for(Grana g:graf.getEdges()) {
+			if(g.getTezina() < 0) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 }

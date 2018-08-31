@@ -33,10 +33,8 @@ import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedSparseGraph;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.io.GraphIOException;
 import edu.uci.ics.jung.io.graphml.GraphMLReader2;
-import edu.uci.ics.jung.io.graphml.GraphMetadata.EdgeDefault;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.EditingModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
@@ -48,10 +46,14 @@ import java.awt.Dimension;
 import java.awt.event.ActionListener;
 import java.awt.geom.Point2D;
 import java.awt.event.ActionEvent;
+import javax.swing.JLabel;
+import java.awt.FlowLayout;
 
 public class PocetnaForma {
 
 	private JFrame frmGraph;
+	private JLabel lblStatus;
+	
 	private StaticLayout<Cvor, Grana> layout;
 	private VisualizationViewer<Cvor, Grana> viewer;
 	private String graphPath = "";
@@ -92,6 +94,7 @@ public class PocetnaForma {
 	
 	private void initialize() throws ParserConfigurationException, SAXException, IOException {
 		frmGraph = new JFrame();
+		lblStatus = new JLabel("");
 		
 		postaviGraf();
 		
@@ -192,29 +195,29 @@ public class PocetnaForma {
 		btnResetGraph.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				Algoritam.resetGraph(viewer.getGraphLayout().getGraph());
-				viewer.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Cvor>());
-				viewer.getRenderContext().setEdgeLabelTransformer(GraphTransformers.getEdgeLabel1());
-				algoritamList.clear();
-				
-				viewer.repaint();
+				resetGraf();
 			}
 		});
+		panel.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		panel.add(btnResetGraph);
 		
-		JButton btnFf = new JButton("FF");
+		JButton btnFf = new JButton("Start Ford-Fulkerson");
 		btnFf.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(viewer.getGraphLayout().getGraph().getDefaultEdgeType().equals(EdgeType.DIRECTED)) {
+				lblStatus.setText("");
+				
+				algoritamList.clear();
+				algoritamList.add(new FordFulkerson(viewer.getGraphLayout().getGraph()));
+				
+				if(algoritamList.get(0).getCvoroviKorak().size() == 0) {
+					lblStatus.setText("Graph has not the right format for this algorithm.");
+					algoritamList.clear();
+				}
+				else {
 					viewer.getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel2());
 					viewer.getRenderContext().setEdgeLabelTransformer(GraphTransformers.getEdgeLabel2());
 					
-					algoritamList.clear();
-					algoritamList.add(new FordFulkerson(viewer.getGraphLayout().getGraph()));
-					
 					viewer.repaint();
-				}
-				else {
-					System.out.println("Ford-Fulkerson works only with directed graphs.");
 				}
 			}
 		});
@@ -225,11 +228,14 @@ public class PocetnaForma {
 			public void actionPerformed(ActionEvent arg0) {
 				if(!algoritamList.isEmpty() && algoritamList.get(0) != null) {
 					if(!algoritamList.get(0).previousStep()) {
-						System.out.println("Algoritam is at the beginning.");
+						lblStatus.setText("Algoritam is at the beginning.");
+					}
+					else {
+						lblStatus.setText("");
 					}
 				}
 				else {
-					System.out.println("Algoritam is null.");
+					lblStatus.setText("Algoritam is null.");
 				}
 				viewer.repaint();
 			}
@@ -241,16 +247,24 @@ public class PocetnaForma {
 			public void actionPerformed(ActionEvent e) {
 				if(!algoritamList.isEmpty() && algoritamList.get(0) != null) {
 					if(!algoritamList.get(0).nextStep()) {
-						System.out.println("Algoritam is at the end.");
+						lblStatus.setText("Algoritam is at the end.");
+					}
+					else {
+						lblStatus.setText("");
 					}
 				}
 				else {
-					System.out.println("Algoritam is null.");
+					lblStatus.setText("Algoritam is null.");
 				}
 				viewer.repaint();
 			}
 		});
 		panel.add(btnNextStep);
+		
+		JPanel panel_1 = new JPanel();
+		frmGraph.getContentPane().add(panel_1, BorderLayout.NORTH);
+		
+		panel_1.add(lblStatus);
 		frmGraph.pack();
 		frmGraph.setVisible(true);
 	}
@@ -277,11 +291,21 @@ public class PocetnaForma {
 		EditingModalGraphMouse<Cvor, Grana> graphMouse = 
 				new EditingModalGraphMouse<Cvor, Grana>(viewer.getRenderContext(), new CvorFactory(), new GranaFactory());
 				
-		MisPlugin plugin = new MisPlugin(frmGraph, algoritamList);
+		MisPlugin plugin = new MisPlugin(frmGraph, algoritamList, lblStatus);
 		graphMouse.remove(graphMouse.getPopupEditingPlugin());
 		graphMouse.add(plugin);
 		
 		viewer.setGraphMouse(graphMouse);
+	}
+	
+	public void resetGraf() {
+		lblStatus.setText("");
+		algoritamList.clear();
+		
+		viewer.getRenderContext().setVertexLabelTransformer(new ToStringLabeller<Cvor>());
+		viewer.getRenderContext().setEdgeLabelTransformer(GraphTransformers.getEdgeLabel1());
+		
+		viewer.repaint();
 	}
 	
 	public void noviGraf(boolean directed) {
@@ -294,9 +318,10 @@ public class PocetnaForma {
 		else {
 			viewer.getGraphLayout().setGraph(new UndirectedSparseGraph<Cvor, Grana>());
 		}
-		viewer.repaint();
 		
 		graphPath="";
+		
+		resetGraf();
 	}
 	
 	public void otvoriGraf() throws ParserConfigurationException, SAXException, IOException, GraphIOException {
@@ -316,9 +341,9 @@ public class PocetnaForma {
 			
 			viewer.getGraphLayout().setGraph(graphReader.readGraph());
 			
-			viewer.repaint();
-			
 			graphPath=fileChooser.getSelectedFile().toString();
+			
+			resetGraf();
 		}
 	}
 	

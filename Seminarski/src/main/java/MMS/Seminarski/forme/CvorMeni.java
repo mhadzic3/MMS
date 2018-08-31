@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.List;
 
+import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
@@ -22,10 +23,12 @@ public class CvorMeni extends JPopupMenu{
 	private JMenuItem brisanje;
 	private JMenuItem dijkstra;
 	private JMenuItem dfs;
+	private JLabel lblStatus;
 	
 	private List<Algoritam> algoritamList;
 			
-	public CvorMeni(List<Algoritam> algoritamList) {
+	public CvorMeni(List<Algoritam> algoritamList, JLabel lblStatus) {
+		setLblStatus(lblStatus);
 		setAlgoritamList(algoritamList);
 		
 		setBrisanje(new JMenuItem("Delete vertex"));
@@ -37,27 +40,37 @@ public class CvorMeni extends JPopupMenu{
 			}
 		});
         
-        setDijkstra(new JMenuItem("Pokreni Dijkstru"));
+        setDijkstra(new JMenuItem("Start Dijkstra"));
         getDijkstra().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel1());
-				
 				getAlgoritamList().clear();
 				getAlgoritamList().add(new Dijkstra(getViewer().getGraphLayout().getGraph(), getCvor()));
 				
-				getViewer().repaint();
+				if(getAlgoritamList().get(0).getCvoroviKorak().size() == 0) {
+					getLblStatus().setText("Graph has not the right format for this algorithm.");
+					getAlgoritamList().clear();
+				}
+				else {
+					getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel1());
+					getViewer().repaint();
+				}
 			}
 		});
         
-        this.setDfs(new JMenuItem("Pokreni DFS"));
+        this.setDfs(new JMenuItem("Start DFS"));
         this.getDfs().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel2());
-				
 				getAlgoritamList().clear();
 				getAlgoritamList().add(new DFS(getViewer().getGraphLayout().getGraph(), getCvor()));
 				
-				getViewer().repaint();
+				if(getAlgoritamList().get(0).getCvoroviKorak().size() == 0) {
+					getLblStatus().setText("Graph has not the right format for this algorithm.");
+					getAlgoritamList().clear();
+				}
+				else {
+					getViewer().getRenderContext().setVertexLabelTransformer(GraphTransformers.getVertexLabel2());
+					getViewer().repaint();
+				}
 			}
 		});
         
@@ -113,6 +126,14 @@ public class CvorMeni extends JPopupMenu{
 
 	public void setDfs(JMenuItem dfs) {
 		this.dfs = dfs;
+	}
+
+	public JLabel getLblStatus() {
+		return lblStatus;
+	}
+
+	public void setLblStatus(JLabel lblStatus) {
+		this.lblStatus = lblStatus;
 	}
 
 	public List<Algoritam> getAlgoritamList() {

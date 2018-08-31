@@ -7,6 +7,7 @@ import java.util.List;
 import MMS.Seminarski.graf.Cvor;
 import MMS.Seminarski.graf.Grana;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.util.EdgeType;
 
 public class FordFulkerson extends Algoritam{
 	public FordFulkerson(Graph<Cvor, Grana> graf) {
@@ -17,25 +18,17 @@ public class FordFulkerson extends Algoritam{
 	}
 	
 	private void FordFulkerson_start(Graph<Cvor, Grana> graf) {
+		List<Cvor> izvorList = new ArrayList<Cvor>(), ponorList = new ArrayList<Cvor>();
+		
+		if(!this.testGraph(graf, izvorList, ponorList)) {
+			return;
+		}
+		
+		Cvor izvor = izvorList.get(0), ponor = ponorList.get(0);
+		
 		Algoritam.resetGraph(graf);
 		
 		this.addGraphAtributes(graf);
-		
-		List<Cvor> cvorovi = new ArrayList<Cvor>(graf.getVertices());
-		Cvor izvor = null, ponor = null;
-		
-		for(Cvor c:cvorovi) {
-			if(graf.getInEdges(c).size()==0 && izvor==null) {
-				izvor = c;
-			}
-			else if(graf.getOutEdges(c).size()==0 && ponor==null) {
-				ponor = c;
-			}
-			else if(graf.getInEdges(c).size()==0 || graf.getOutEdges(c).size()==0){
-				System.out.println("Mreza ima vise od jednog izvora ili ponora.");
-				return;
-			}
-		}
 		
 		List<Grana> lanac = BFS_lanac(graf, izvor, ponor);
 				
@@ -63,15 +56,13 @@ public class FordFulkerson extends Algoritam{
 			
 			lanac = BFS_lanac(graf, izvor, ponor);
 		}
-		
-		this.addGraphAtributes(graf);
 	}
 	
 	private List<Grana> BFS_lanac(Graph<Cvor, Grana> graf, Cvor izvor, Cvor ponor) {
 		List<Cvor> cvorovi = new ArrayList<Cvor>();
 		cvorovi.add(izvor);
 		
-		BFS_rek(graf, cvorovi);
+		BFS_rek(graf, cvorovi, ponor);
 		
 		List<Grana> lanac = new ArrayList<Grana>();
 		
@@ -89,21 +80,30 @@ public class FordFulkerson extends Algoritam{
 		return lanac;
 	}
 	
-	private void BFS_rek(Graph<Cvor, Grana> graf, List<Cvor> cvorovi) {
+	private void BFS_rek(Graph<Cvor, Grana> graf, List<Cvor> cvorovi, Cvor ponor) {
 		if(cvorovi.isEmpty()) {
 			return;
 		}
 		
+		boolean kraj = false;
 		for(Cvor c:cvorovi) {
+			if(c == ponor) {
+				kraj = true;
+			}
+			
 			c.setOznacen(2);
 			c.setRedoslijed(Cvor.getBrojac());
 		}
+		Cvor.setBrojac(Cvor.getBrojac() + 1);
 		
 		this.addGraphAtributes(graf);
 		
-		Cvor.setBrojac(Cvor.getBrojac() + 1);
-		
+		if(kraj) {
+			return;
+		}
+				
 		List<Cvor> cvorovi2 = new ArrayList<Cvor>();
+		
 		for(Cvor c:cvorovi) {
 			List<Grana> grane = new ArrayList<Grana>(graf.getIncidentEdges(c));
 			for(Grana g:grane) {
@@ -111,17 +111,22 @@ public class FordFulkerson extends Algoritam{
 				if(c2.getOznacen() == 0 && 
 						(c2 == graf.getDest(g) && g.getProtok() < g.getTezina() || 
 						 c2 == graf.getSource(g) && g.getProtok() > 0.0)) {
-					c2.setCvor(c);
-					c2.setGrana(g);
-					g.setOznacena(2);
-					cvorovi2.add(c2);
 					
-					g.setSmjer(c2 == graf.getDest(g) ? true : false);
+					g.setOznacena(2);
+					
+					if(!cvorovi2.contains(c2)) {
+						g.setSmjer(c2 == graf.getDest(g) ? true : false);
+						
+						c2.setCvor(c);
+						c2.setGrana(g);
+						
+						cvorovi2.add(c2);
+					}
 				}
 			}
 		}
 		
-		BFS_rek(graf, cvorovi2);
+		BFS_rek(graf, cvorovi2, ponor);
 	}
 	
 	private void resetGraphFF(Graph<Cvor, Grana> graf) {
@@ -139,5 +144,29 @@ public class FordFulkerson extends Algoritam{
 		for(Grana g:graf.getEdges()) {
 			g.setOznacena(0);
 		}
+	}
+	
+	private boolean testGraph(Graph<Cvor, Grana> graf, List<Cvor> izvor, List<Cvor> ponor) {
+		if(graf.getDefaultEdgeType() == EdgeType.DIRECTED && !this.testNegativeEdges(graf)) {
+			boolean postojiIzvor = false, postojiPonor = false;
+			
+			for(Cvor c:graf.getVertices()) {
+				if(!postojiIzvor && graf.getInEdges(c).size() == 0) {
+					izvor.add(c);
+					postojiIzvor = true;
+				}
+				else if(!postojiPonor && graf.getOutEdges(c).size() == 0) {
+					ponor.add(c);
+					postojiPonor = true;
+				}
+				else if(graf.getInEdges(c).size()==0 || graf.getOutEdges(c).size()==0){
+					return false;
+				}
+			}
+			
+			return izvor.size() == 1 && ponor.size() == 1;
+		}
+		
+		return false;
 	}
 }

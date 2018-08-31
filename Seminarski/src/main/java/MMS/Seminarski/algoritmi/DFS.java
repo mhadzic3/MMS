@@ -24,10 +24,6 @@ public class DFS extends Algoritam {
 		Cvor.setBrojac(Cvor.getBrojac() + 1);
 		
 		DFS_rek(graf, izvor);
-		
-		if(Cvor.getBrojac() <= graf.getVertexCount()) {
-			System.out.println("Nema puta do svih cvorova grafa.");
-		}
 	}
 	
 	private void DFS_rek(Graph<Cvor, Grana> graf, Cvor izvor) {
@@ -38,7 +34,7 @@ public class DFS extends Algoritam {
 		List<Grana> grane = new ArrayList<Grana>(graf.getOutEdges(izvor));
 		for(Grana g:grane) {
 			Cvor c = graf.getOpposite(izvor, g);
-			if(c.getOznacen()==0) {
+			if(c.getOznacen() == 0) {
 				g.setOznacena(1);
 				c.setRedoslijed(Cvor.getBrojac());
 				Cvor.setBrojac(Cvor.getBrojac() + 1);

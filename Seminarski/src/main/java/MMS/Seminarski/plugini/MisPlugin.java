@@ -5,6 +5,7 @@ import java.awt.geom.Point2D;
 import java.util.List;
 
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 
 import MMS.Seminarski.algoritmi.Algoritam;
 import MMS.Seminarski.forme.CvorMeni;
@@ -19,10 +20,10 @@ public class MisPlugin extends AbstractPopupGraphMousePlugin {
 	private CvorMeni cvorMeni;
 	private GranaMeni granaMeni;
 	
-	public MisPlugin(JFrame frame, List<Algoritam> algoritamList) {
+	public MisPlugin(JFrame frame, List<Algoritam> algoritamList, JLabel lblStatus) {
 		this(MouseEvent.BUTTON3_MASK);
 		
-		this.setCvorMeni(new CvorMeni(algoritamList));
+		this.setCvorMeni(new CvorMeni(algoritamList, lblStatus));
 		this.setGranaMeni(new GranaMeni(frame));
 	}
 
